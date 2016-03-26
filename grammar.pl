@@ -1,30 +1,85 @@
 % apply Definite Clause Grammar
-program --> functionList.
-functionList --> function, functionListCollection.
-functionListCollection --> functionList.
+program([A]) --> functionList(A).
+functionList([[A],[B]]) --> 
+	function(A), 
+	functionListCollection(B).
+functionListCollection([A]) --> functionList(A).
 functionListCollection --> [].
-function --> typeID, ['OPEN_P'], typeIDList, ['CLOSE_P'], ['ASSIGN'], expression.
-typeID --> ['TYPE_INT'],['IDENTIFIER'].
-typeID --> ['TYPE_BOOL'],['IDENTIFIER'].
-typeIDList --> typeID, typeIDListCollection.
-typeIDListCollection --> ['COMMA'], typeIDList.
+function([[A],[B],['('],[X],[Y],[')'],['='],[T],[R]]) --> 
+	typeID([A],[B]), 
+	['OPEN_P'],
+	typeIDList([X],[Y]), 
+	['CLOSE_P'], 
+	['ASSIGN'], 
+	expression([T],[R]).
+typeID(['int'],['id']) --> 
+	['TYPE_INT'],
+	['IDENTIFIER'].
+typeID(['bool'],['id']) --> 
+	['TYPE_BOOL'],
+	['IDENTIFIER'].
+typeIDList([A],[B]) --> 
+	typeID(A), 
+	typeIDListCollection(B).
+typeIDListCollection([[','],[A]]) --> 
+	['COMMA'], 
+	typeIDList(A).
 typeIDListCollection --> [].
-expression --> ['COND_IF'], comparison, ['COND_THEN'], value, ['COND_ELSE'], value.
-expression --> ['LET'], ['IDENTIFIER'], ['ASSIGN'], value, ['LET_IN'], expression.
-expression --> value, extraExpression.
-extraExpression --> arithmetic.
+expression([['if'],[X],['then'],[Y],['else'],[Z]]) -->
+	['COND_IF'], 
+	comparison(X), 
+	['COND_THEN'], 
+	value(Y), 
+	['COND_ELSE'], 
+	value(Z).
+expression([['let'],['id'],['='],[A],['in'],[B]]) -->
+        ['LET'],
+        ['IDENTIFIER'], 
+        ['ASSIGN'], 
+        value(A), 
+        ['LET_IN'], 
+        expression(B).
+expression([[A],[B]]) --> 
+	value(A), 
+	extraExpression(B).
+extraExpression([A]) --> 
+	arithmetic(A).
 extraExpression --> [].
-arithmetic --> ['ARITH_ADD'], value.
-arithmetic --> ['ARITH_SUB'], value.
-comparison --> value, comparisonRight.
-comparisonRight --> ['LOGIC_EQ'], value.
-comparisonRight --> ['LOGIC_NOT_EQ'], value.
-comparisonRight --> ['LOGIC_GT'], value.
-comparisonRight --> ['LOGIC_GTEQ'], value.
-value --> ['INTEGER'].
-value --> ['IDENTIFIER'], valueParameters.
-valueParameters --> ['OPEN_P'], parameters, ['CLOSE_P'].
-valueParameters --> [].
-parameters --> value, parametersList.
-parametersList --> ['COMMA'], parameters.
-parametersList --> [].
+arithmetic([['+'],[A]]) --> 
+	['ARITH_ADD'], 
+	value(A).
+arithmetic([['-'],[A]]) --> 
+	['ARITH_SUB'], 
+	value(A).
+comparison([[A],[B]]) --> 
+	value(A),
+	comparisonRight(B).
+comparisonRight([['=='],[A]]) --> 
+	['LOGIC_EQ'], 
+	value(A).
+comparisonRight(['!='],[A]) -->
+	['LOGIC_NOT_EQ'], 
+	value(A).
+comparisonRight(['>'],[A]) -->
+	['LOGIC_GT'], value(A).
+comparisonRight(['>='],[A]) -->
+	['LOGIC_GTEQ'], value(A).
+value([integer]) --> 
+	['INTEGER'].
+value([['id'],[A]]) --> 
+	['IDENTIFIER'],
+        valueParameters(A).
+valueParameters([['('],[A],[')']]) -->
+	['OPEN_P'], 
+	parameters(A), 
+	['CLOSE_P'].
+valueParameters -->
+	[].
+parameters([[A],[B]]) --> 
+	value(A), 
+	parametersList(B).
+parametersList([[','],[A]]) --> 
+	['COMMA'], 
+	parameters(A).
+parametersList --> 
+	[].
