@@ -11,10 +11,10 @@ run(FileName, StructuredList):-
 
 % output the structured list appropriately labeling tokens in production well written in lists
 % with given appropriate format
-parse_list(LexedList, Result):-
-    phrase(program(LexedList),StrcturedList,[]),
-    phrase(program(LexedList),StrcturedList,Result),
-    format('~s~n',[Result]).
+parse_list(LexedList, Slist):-
+    phrase(program(SList),LexedList,[]),
+    phrase(program(SList),LexedList),
+    format('~s~n',[SList]).
 
 % write out grammar in formatted manner
 %    program(I)-->[I],{write_list(I),nl}.
