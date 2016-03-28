@@ -6,27 +6,24 @@ functionList([A,B]) -->
 	functionListCollection(B).
 functionListCollection([A]) --> 
 	functionList(A).
-functionListCollection --> [].
+functionListCollection([]) --> [].
 function([A,'(',B,')','=',C]) --> 
 	typeID(A), 
 	['OPEN_P'],
 	typeIDList(B), 
-	['CLOSE_P'], 
-	['ASSIGN'], 
+	['CLOSE_P','ASSIGN'], 
 	expression(C).
 typeID(['int','id']) --> 
-	['TYPE_INT'],
-	['IDENTIFIER'].
+	['TYPE_INT','IDENTIFIER'].
 typeID(['bool','id']) --> 
-	['TYPE_BOOL'],
-	['IDENTIFIER'].
+	['TYPE_BOOL','IDENTIFIER'].
 typeIDList([A,B]) --> 
 	typeID(A), 
 	typeIDListCollection(B).
 typeIDListCollection([',',A]) --> 
 	['COMMA'], 
 	typeIDList(A).
-typeIDListCollection --> [].
+typeIDListCollection([]) --> [].
 expression(['if',X,'then',Y,'else',Z]) -->
 	['COND_IF'], 
 	comparison(X), 
@@ -35,9 +32,7 @@ expression(['if',X,'then',Y,'else',Z]) -->
 	['COND_ELSE'], 
 	value(Z).
 expression(['let','id','=',A,'in',B]) -->
-        ['LET'],
-        ['IDENTIFIER'], 
-        ['ASSIGN'], 
+        ['LET','IDENTIFIER','ASSIGN'], 
         value(A), 
         ['LET_IN'], 
         expression(B).
@@ -46,7 +41,7 @@ expression([A,B]) -->
 	extraExpression(B).
 extraExpression([A]) --> 
 	arithmetic(A).
-extraExpression --> [].
+extraExpression([]) --> [].
 arithmetic(['+',A]) --> 
 	['ARITH_ADD'], 
 	value(A).
@@ -77,7 +72,7 @@ valueParameters(['(',A,')']) -->
 	['OPEN_P'], 
 	parameters(A), 
 	['CLOSE_P'].
-valueParameters -->
+valueParameters([]) -->
 	[].
 parameters([A,B]) --> 
 	value(A), 
@@ -85,5 +80,5 @@ parameters([A,B]) -->
 parametersList([',',A]) --> 
 	['COMMA'], 
 	parameters(A).
-parametersList --> 
+parametersList([]) --> 
 	[].
