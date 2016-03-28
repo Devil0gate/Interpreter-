@@ -9,37 +9,37 @@ functionListCollection([A]) -->
 functionListCollection --> [].
 function([A,'(',B,')','=',C]) --> 
 	typeID(A), 
-	'OPEN_P',
+	['OPEN_P'],
 	typeIDList(B), 
-	'CLOSE_P', 
-	'ASSIGN', 
+	['CLOSE_P'], 
+	['ASSIGN'], 
 	expression(C).
 typeID(['int','id']) --> 
-	'TYPE_INT',
-	'IDENTIFIER'.
+	['TYPE_INT'],
+	['IDENTIFIER'].
 typeID(['bool','id']) --> 
-	'TYPE_BOOL',
-	'IDENTIFIER'.
+	['TYPE_BOOL'],
+	['IDENTIFIER'].
 typeIDList([A,B]) --> 
 	typeID(A), 
 	typeIDListCollection(B).
 typeIDListCollection([',',A]) --> 
-	'COMMA', 
+	['COMMA'], 
 	typeIDList(A).
 typeIDListCollection --> [].
 expression(['if',X,'then',Y,'else',Z]) -->
-	'COND_IF', 
+	['COND_IF'], 
 	comparison(X), 
-	'COND_THEN', 
+	['COND_THEN'], 
 	value(Y), 
-	'COND_ELSE', 
+	['COND_ELSE'], 
 	value(Z).
 expression(['let','id','=',A,'in',B]) -->
-        'LET',
-        'IDENTIFIER', 
-        'ASSIGN', 
+        ['LET'],
+        ['IDENTIFIER'], 
+        ['ASSIGN'], 
         value(A), 
-        'LET_IN', 
+        ['LET_IN'], 
         expression(B).
 expression([A,B]) --> 
 	value(A), 
@@ -48,42 +48,42 @@ extraExpression([A]) -->
 	arithmetic(A).
 extraExpression --> [].
 arithmetic(['+',A]) --> 
-	'ARITH_ADD', 
+	['ARITH_ADD'], 
 	value(A).
 arithmetic(['-',A]) --> 
-	'ARITH_SUB', 
+	['ARITH_SUB'], 
 	value(A).
 comparison([A,B]) --> 
 	value(A),
 	comparisonRight(B).
 comparisonRight(['==',A]) --> 
-	'LOGIC_EQ', 
+	['LOGIC_EQ'], 
 	value(A).
 comparisonRight(['!=',A]) -->
-	'LOGIC_NOT_EQ', 
+	['LOGIC_NOT_EQ'], 
 	value(A).
 comparisonRight(['>',A]) -->
-	'LOGIC_GT', 
+	['LOGIC_GT'], 
 	value(A).
 comparisonRight(['>=',A]) -->
-	'LOGIC_GTEQ', 
+	['LOGIC_GTEQ'], 
 	value(A).
 value([integer]) --> 
-	'INTEGER'.
+	['INTEGER'].
 value(['id',A]) --> 
-	'IDENTIFIER',
+	['IDENTIFIER'],
         valueParameters(A).
 valueParameters(['(',A,')']) -->
-	'OPEN_P', 
+	['OPEN_P'], 
 	parameters(A), 
-	'CLOSE_P'.
+	['CLOSE_P'].
 valueParameters -->
 	[].
 parameters([A,B]) --> 
 	value(A), 
 	parametersList(B).
 parametersList([',',A]) --> 
-	'COMMA', 
+	['COMMA'], 
 	parameters(A).
 parametersList --> 
 	[].
