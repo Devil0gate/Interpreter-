@@ -1,10 +1,10 @@
-%:-include('tokenizer.pl').
+:-include('tokenizer.pl').
 %:-include('grammar.pl').
 
 % test demo for lexer
-%run(FileName, LexedList):-
-%    tokenize_file(FileName, Tokens),
-%    lexer(Tokens, LexedList).
+run(FileName, LexedList):-
+    tokenize_file(FileName, Tokens),
+    lexer(Tokens, LexedList).
 % convert_token("int","TYPE_INT").
 convert_token(X,Y):-
     (Y = 'int', X = 'TYPE_INT'),!;
@@ -24,7 +24,7 @@ convert_token(X,Y):-
     (Y = '-',X = 'ARITH_SUB'),!;
     (Y = '(',X = 'OPEN_P'),!;
     (Y = ')',X = 'CLOSE_P'),!;
-    (integer(Y),X = 'INTEGER'),!;
+    (atom_number(Y, Z),integer(Z) ,X = 'INTEGER'),!;
     (X='IDENTIFIER').
     
     lexer([],[]).
