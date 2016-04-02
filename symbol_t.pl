@@ -15,13 +15,20 @@ create_empty_table():-
 	b_setval(symbol_table,Map).
 		
 % Accepts a key, value pair as arguments and adds a symbol to
-% the table in the form 
+% the table in the form ?(if assume key exists in the map)
 add_symbol(Key,Value):-
 	b_getval(symbol_table,Table),
 	get_assoc(Key,Table,Val),
 	addFirst(Val,Value,RL),
 	put_assoc(Key,Table,RL,NewMap_),
 	b_setval(symbol_table,NewMap_).
+	
+% Accepts a key even if the key doesnt exist, then just create a new case to create a key 
+% in the map
+add_symbol(Key,Value):-
+	b_getval(symbol_table,Table),
+	put_assoc(Key, Table, Value, NewMap_),
+	b_setval(symbol_tabel,NewMap_).
 
 % Add an element to the front of the given list
 addFirst([], Element, [Element]).
@@ -43,12 +50,31 @@ remove_symbol(Key):-
 	get_tail(Val,Tail),
 	put_assoc(Key,Table,Tail,Symbol),
 	b_setval(symbol_table, Symbol).
-
-% get the tail of the list	
-get_tail([H|T],T).
 		
 % init_func(FunctionList):-
+
+retrieve_([],[],[],[],[]).	
+retrieve_([H|T], N, Rt, Pa, Fb):-
+	member([Rt, N], H),
+	retrieve_fb_member(T, _, _, Pa, Fb).
+
+retrieve_fb_member([_|T], _, _, Pa, Fb):-
+	member([Pa, Fb], T),
+	is_list(Pa),is_list(Fb).
+		
+retrieve_fb_member([_|T], _, _, Pa, Fb):-
+	member([Pa, Fb], T),
+	get_tail(Pa,Tp),get_tail(Fb,Tf),
+	retrieve_fb_member(T, _, _, Tp, Tf).
+	
+% retrieve_member([H|T], _, _, Pa, Fb):-
+%	get_tail().
 			
+% get the tail of the list
+get_tail([],[]).	
+get_tail([H|T],T).	
+		
+		
 % executing a function	
 % call_func(Name, Parameters, Result):-
 %	get_symbol(Name, [RetType, Params, FuncBody]),
