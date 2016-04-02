@@ -1,4 +1,4 @@
-:-include('tokenizer.pl').
+% :-include('tokenizer.pl').
 %:-include('grammar.pl').
 
 % test demo for lexer
