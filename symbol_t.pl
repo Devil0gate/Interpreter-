@@ -55,25 +55,26 @@ remove_symbol(Key):-
 
 retrieve_([],[],[],[],[]).	
 retrieve_([H|T], N, Rt, Pa, Fb):-
-	member([Rt, N], H),
+	member_(H, Rt, N),
 	retrieve_fb_member(T, _, _, Pa, Fb).
 
 retrieve_fb_member([_|T], _, _, Pa, Fb):-
-	member([Pa, Fb], T),
+	member_(T, Pa, Fb),
 	is_list(Pa),is_list(Fb).
 		
 retrieve_fb_member([_|T], _, _, Pa, Fb):-
-	member([Pa, Fb], T),
+	member_(T, Pa, Fb),
 	get_tail(Pa,Tp),get_tail(Fb,Tf),
 	retrieve_fb_member(T, _, _, Tp, Tf).
-	
-% retrieve_member([H|T], _, _, Pa, Fb):-
-%	get_tail().
-			
+				
 % get the tail of the list
 get_tail([],[]).	
 get_tail([H|T],T).	
-		
+
+% assign corresponding values onto given list
+member_([],[]).
+member_([H|T], N, B):-
+	N = H, B = T.		
 		
 % executing a function	
 % call_func(Name, Parameters, Result):-
