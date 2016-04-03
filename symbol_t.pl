@@ -3,11 +3,8 @@ main:-
 	add_symbol(a , 11 ),
 	add_symbol(b, 7 ),
 	write('main1; '),
-	print_symbol_table, nl,
-	func( 5 ),
-	write('main2: '),
-	print_symbol_table, nl,!.
-
+	print_symbol_table, nl.
+	
 % create a empty table
 % create a empty symbol table
 create_empty_table():-
@@ -50,7 +47,12 @@ remove_symbol(Key):-
 	get_tail(Val,Tail),
 	put_assoc(Key,Table,Tail,Symbol),
 	b_setval(symbol_table, Symbol).
-		
+
+% get the tail of the list
+get_tail([],[]).	
+get_tail([_|T],T).
+
+init_func([]).		
 init_func([Function|FunctionList]):-
 	format_function(Function),
 	init_func(FunctionList).
@@ -80,11 +82,7 @@ form_Params([P|[]], P).
 %	member_(BL, Pa, Fb),
 %	get_tail(Pa,Tp),get_tail(Fb,Tf),
 %	retrieve_fb_member(BL, _, _, Tp, Tf).
-				
-% get the tail of the list
-get_tail([],[]).	
-get_tail([_|T],T).	
-
+					
 % assign corresponding values onto given list
 % member_([],[]).
 % member_([H|[H1|_]], N, B):-
