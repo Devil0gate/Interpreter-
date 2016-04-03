@@ -1,38 +1,34 @@
+:- use_module(library(assoc)).
+
 main:-
-	create_empty_table,
-	add_symbol(a , 11 ),
-	add_symbol(b, 7 ),
-	write('main1; '),
-	print_symbol_table, nl.
+	print_out_table().
 	
-% create a empty table
+print_out_table():-
+	create_empty_table(),
+	add_symbol(a,2),add_symbol(b,3),add_symbol(c,4),add_symbol(c,5),remove_symbol(c),
+	b_getval(symbol_table,Map),
+	assoc_to_list(Map,List),
+	write(List).	
+
 % create a empty symbol table
 create_empty_table():-
 	empty_assoc(Map),
 	b_setval(symbol_table,Map).
-		
-% Accepts a key, value pair as arguments and adds a symbol to
-% the table in the form ?(if assume key exists in the map)
-add_symbol(Key,Value):-
-	b_getval(symbol_table,Table),
-	get_assoc(Key,Table,Val),
-	addFirst(Val,Value,RL),
-	put_assoc(Key,Table,RL,NewMap_),
-	b_setval(symbol_table,NewMap_).
-	
-% Accepts a key even if the key doesnt exist, then just create a new case to create a key 
-% in the map
-add_symbol(Key,Value):-
-	b_getval(symbol_table,Table),
-	put_assoc(Key, Table, Value, NewMap_),
-	b_setval(symbol_tabel,NewMap_).
 
-% Add an element to the front of the given list
-addFirst([], Element, [Element]).
-addFirst(List, Element, [Element|List]).
-	
-% Accepts a list of keys as the first argument and a list of
-% values as the second argument	
+% Accepts a key, value pair as arguments and adds a symbol to
+% the table in the form ?
+add_symbol(Key,Value):-
+	b_getval(symbol_table,Table),
+	assoc_to_keys(Table,KeyList),
+	(if_key_exist(Key, KeyList)-> 
+		get_assoc(Key,Table,Val,NewMap,[Value|Val]);
+		put_assoc(Key,Table,Value,NewMap)),	
+	b_setval(symbol_table,NewMap).
+
+if_key_exist(Key,[Key|_]):-!.
+	if_key_exist(Key,[_|KeyList]):-
+	if_key_exist(Key,KeyList).	
+
 add_symbol_list([H|T],[H1|T1]):-
 	add_symbol(H,H1),
 	add_symbol_list(T,T1).
@@ -65,10 +61,6 @@ form_Params([P|[]], P).
 	form_Params([P|[','|List]],[P|PL]):-
 	form_Params(List,PL).
 	
-	
-		
-			
-
 % retrieve_([],[],[],[],[]).	
 % retrieve_([H|T], N, Rt, Pa, Fb):-
 %	member_(H, Rt, N),
