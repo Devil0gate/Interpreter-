@@ -1,4 +1,8 @@
-:- use_module(library(assoc)).
+:-include('tokenizer.pl').
+:-include('lexer.pl').
+:-include('grammar.pl').
+:-include('parser.pl').
+:-use_module(library(assoc)).
 
 main:-
 	print_out_table().
@@ -9,24 +13,11 @@ print_out_table():-
 	b_getval(symbol_table,Map),
 	assoc_to_list(Map,List),
 	write(List).
-		
-test_Params():-
-	P = [[int,a],[,,[[int,b],[]]]],
-	form_Params(P, PL),
-	write(PL).
-	
-test_format_func():-
-	create_empty_table(),
-	F = [['int','add'],'(',[['int','a'],[',',[['int','b'],[]]]],')','=',[['a',[]],[['+',['b',[]]]]]],
-	format_function(F),
-	b_getval(symbol_table,Map),
-	assoc_to_list(Map,List),
-	write(List).
-	
+			
 print_out_symbolTable():-
 	create_empty_table(),
-	T = [[['int','add'],'(',[['int','a'],[',',[['int','b'],[]]]],')','=',[['a',[]],[['+',['b',[]]]]]]],
-	init_func(T),
+	run('New_tokenize.txt',T1),
+	initialize_functions(T1),
 	b_getval(symbol_table,Map),
 	assoc_to_list(Map,List),
 	write(List).
@@ -70,14 +61,43 @@ remove_symbol(Key):-
 get_tail([],[]).	
 get_tail([_|T],T).
 
+initialize_functions([]).
+initialize_functions([[Type,ID],'(',B,')','=',C]):-
+	b_getval(symbol_table,M),
+	put_assoc(ID,M,[[Type,B,C]],Newmap),
+	b_setval(symbol_table,Newmap), !.
+initialize_functions([H|T]):-
+	is_list(H),
+	initialize_functions(H),
+	initialize_functions(T), !.
+initialize_functions([_|T]):-
+	initialize_functions(T).
+
+%----------------------------------------------------------this is for intepreter
+
+test_Params():-
+	P = [[int,a],[,,[[int,b],[]]]],
+	form_Params(P, PL),
+	write(PL).
+	
+test_format_func():-
+	create_empty_table(),
+	F = [['int','add'],'(',[['int','a'],[',',[['int','b'],[]]]],')','=',[['a',[]],[['+',['b',[]]]]]],
+	format_function(F),
+	b_getval(symbol_table,Map),
+	assoc_to_list(Map,List),
+	write(List).
+	
+
 init_func([]).		
 init_func([Function|FunctionList]):-
+	write(Function),nl,nl,
 	format_function(Function),
 	init_func(FunctionList).
 	
 format_function([[Ret,Name],'(',Params,')','=',FuncBody]):-
-	form_Params(Params, ParamsList),
-	add_symbol(Name,[Ret,ParamsList,FuncBody]).
+%	form_Params(Params, ParamsList),
+	add_symbol(Name,[Ret,Params,FuncBody]).
 	
 form_Params([P, []], [P]).
 	form_Params([P, List],[Head|PL]):-
