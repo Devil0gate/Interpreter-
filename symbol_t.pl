@@ -61,6 +61,7 @@ remove_symbol(Key):-
 get_tail([],[]).	
 get_tail([_|T],T).
 
+% initialize function 
 initialize_functions([]).
 initialize_functions([[Type,ID],'(',B,')','=',C]):-
 	b_getval(symbol_table,M),
@@ -88,9 +89,8 @@ test_format_func():-
 	assoc_to_list(Map,List),
 	write(List).
 	
-
 init_func([]).		
-init_func([Function|FunctionList]):-
+init_func([Function|[_|FunctionList]]):-
 	write(Function),nl,nl,
 	format_function(Function),
 	init_func(FunctionList).
