@@ -89,9 +89,10 @@ test_format_func():-
 	assoc_to_list(Map,List),
 	write(List).
 	
-init_func([]).		
-init_func([Function|[_|FunctionList]]):-
-	write(Function),nl,nl,
+init_func([]):-!.		
+init_func([Function|[]):-
+	format_function(Function),!.
+	init_func([Function|FunctionList]):-
 	format_function(Function),
 	init_func(FunctionList).
 	
@@ -106,7 +107,6 @@ form_Params([P, []], [P]).
 		form_Params(List,PL));
 		form_Params(List,[Head|PL])
 		).
-
 	
 % retrieve_([],[],[],[],[]).	
 % retrieve_([H|T], N, Rt, Pa, Fb):-
