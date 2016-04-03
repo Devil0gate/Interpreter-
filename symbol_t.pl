@@ -51,31 +51,44 @@ remove_symbol(Key):-
 	put_assoc(Key,Table,Tail,Symbol),
 	b_setval(symbol_table, Symbol).
 		
-% init_func(FunctionList):-
+init_func([Function|FunctionList]):-
+	format_function(Function),
+	init_func(FunctionList).
 	
-
-retrieve_([],[],[],[],[]).	
-retrieve_([H|T], N, Rt, Pa, Fb):-
-	member_(H, Rt, N),
-	retrieve_fb_member(T, _, _, Pa, Fb).
-
-retrieve_fb_member([_|T], _, _, Pa, Fb):-
-	member_(T, Pa, Fb),
-	is_list(Pa),is_list(Fb).
+format_function([[Ret,Name],'(',Params,')','=',FuncBody]):-
+	format_Params(Params, ParamsList),
+	add_symbol(Name,[Ret,ParamsList,FuncBody]).
+	
+form_Params([P|[]], P).
+	form_Params([P|[','|List]],[P|PL]):-
+	form_Params(List,PL).
+	
+	
 		
-retrieve_fb_member([_|T], _, _, Pa, Fb):-
-	member_(T, Pa, Fb),
-	get_tail(Pa,Tp),get_tail(Fb,Tf),
-	retrieve_fb_member(T, _, _, Tp, Tf).
+			
+
+% retrieve_([],[],[],[],[]).	
+% retrieve_([H|T], N, Rt, Pa, Fb):-
+%	member_(H, Rt, N),
+%	retrieve_fb_member(T, _, _, Pa, Fb).
+
+% retrieve_fb_member(BL, _, _, Pa, Fb):-
+%	member_(BL, Pa, Fb),
+%	is_list(Pa),is_list(Fb).
+		
+% retrieve_fb_member(BL, _, _, Pa, Fb):-
+%	member_(BL, Pa, Fb),
+%	get_tail(Pa,Tp),get_tail(Fb,Tf),
+%	retrieve_fb_member(BL, _, _, Tp, Tf).
 				
 % get the tail of the list
 get_tail([],[]).	
-get_tail([H|T],T).	
+get_tail([_|T],T).	
 
 % assign corresponding values onto given list
-member_([],[]).
-member_([H|T], N, B):-
-	N = H, B = T.		
+% member_([],[]).
+% member_([H|[H1|_]], N, B):-
+%	N = H, B = H1.
 		
 % executing a function	
 % call_func(Name, Parameters, Result):-
