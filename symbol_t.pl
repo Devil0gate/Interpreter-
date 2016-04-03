@@ -52,6 +52,7 @@ remove_symbol(Key):-
 	b_setval(symbol_table, Symbol).
 		
 % init_func(FunctionList):-
+	
 
 retrieve_([],[],[],[],[]).	
 retrieve_([H|T], N, Rt, Pa, Fb):-
