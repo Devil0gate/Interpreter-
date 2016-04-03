@@ -8,8 +8,29 @@ print_out_table():-
 	add_symbol(a,2),add_symbol(b,3),add_symbol(c,4),add_symbol(c,5),remove_symbol(c),
 	b_getval(symbol_table,Map),
 	assoc_to_list(Map,List),
-	write(List).	
-
+	write(List).
+		
+test_Params():-
+	P = [[int,a],[,,[[int,b],[]]]],
+	form_Params(P, PL),
+	write(PL).
+	
+test_format_func():-
+	create_empty_table(),
+	F = [['int','add'],'(',[['int','a'],[',',[['int','b'],[]]]],')','=',[['a',[]],[['+',['b',[]]]]]],
+	format_function(F),
+	b_getval(symbol_table,Map),
+	assoc_to_list(Map,List),
+	write(List).
+	
+print_out_symbolTable():-
+	create_empty_table(),
+	T = [[['int','add'],'(',[['int','a'],[',',[['int','b'],[]]]],')','=',[['a',[]],[['+',['b',[]]]]]]],
+	init_func(T),
+	b_getval(symbol_table,Map),
+	assoc_to_list(Map,List),
+	write(List).
+		
 % create a empty symbol table
 create_empty_table():-
 	empty_assoc(Map),
@@ -29,6 +50,7 @@ if_key_exist(Key,[Key|_]):-!.
 	if_key_exist(Key,[_|KeyList]):-
 	if_key_exist(Key,KeyList).	
 
+add_symbol_list([],[]).
 add_symbol_list([H|T],[H1|T1]):-
 	add_symbol(H,H1),
 	add_symbol_list(T,T1).
@@ -54,12 +76,17 @@ init_func([Function|FunctionList]):-
 	init_func(FunctionList).
 	
 format_function([[Ret,Name],'(',Params,')','=',FuncBody]):-
-	format_Params(Params, ParamsList),
+	form_Params(Params, ParamsList),
 	add_symbol(Name,[Ret,ParamsList,FuncBody]).
 	
-form_Params([P|[]], P).
-	form_Params([P|[','|List]],[P|PL]):-
-	form_Params(List,PL).
+form_Params([P, []], [P]).
+	form_Params([P, List],[Head|PL]):-
+	(is_list(P)->
+		(Head = P,
+		form_Params(List,PL));
+		form_Params(List,[Head|PL])
+		).
+
 	
 % retrieve_([],[],[],[],[]).	
 % retrieve_([H|T], N, Rt, Pa, Fb):-
