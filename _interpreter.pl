@@ -23,7 +23,7 @@ evaluate( 0, ValResult1, _, ValResult1 ).
 evaluate( 1, _, ValResult2, ValResult2 ).
 
 extraExpressionHandler([], []).		
-extraExpressionHandler(Arithmetic, Result):-
+extraExpressionHandler([Arithmetic], Result):-
 	arithmeticHandler(Arithmetic, Result).	
 			
 arithmeticHandler(['+', Value], ['+', ValueResult]):-
@@ -68,22 +68,35 @@ evaluateComparison( '>', _, _, 1).
 
 evaluateComparison( '>=', A, B, 0 ):-
 	A >= B, !.
-evaluateComparison( '>=', _, _, 1 ).	
+evaluateComparison( '>=', _, _, 1 ).
 
+type_c('int', Val):- integer(Val).	
+type_c('bool', 1).	
+type_c('bool', 0).
+
+parse_params( [], [], [] ).
+parse_params( [[Type, Name], []], [H], [Name] ) :-
+	type_c(Type, H),
+	add_symbol(Name, H).
+parse_params([[Type, Name],[',', T]], [H|Rest], [Name|Result] ):-
+	type_c(Type, H),
+	add_symbol(Name, H),
+	parse_params(T, Rest, Result).
+	
 call_func(Name, Parameters, Result):-
 % return type could be ommited??
-	get_symbol(Name, [_, Params, FuncBody]),
-	
-	add_symbol_list(Params, Parameters),
+	get_symbol(Name, [RT, Params, FuncBody]),
+	write('FuncBody: '), write( FuncBody ), nl,
+	write('Params: '), write(Params), nl,
+	parse_params( Params, Parameters, VariableList ),
+	write('Calling Expression'), nl, 
 	expressionHandler(FuncBody, Result),
-	remove_symbols(Params),
-	
-	b_getval(symbol_table,Map),
-	get_assoc(timer, Map, T, NewMap, NewT),
-	NewT is T + 1,
-	b_setval(symbol_table, NewMap).
+	write('Result: '), write(Result), nl,
+	%remove_symbols(VariableList),
+	type_c(RT, Result).
 			
-valueHandler(Number, Number).
+valueHandler([Atom], Value) :- atom_number(Atom, Value).
+valueHandler([Number], Number).
 	
 valueHandler([ID, ValueParameter], Result):-
 	valuePar(ValueParameter, ValParRe),
