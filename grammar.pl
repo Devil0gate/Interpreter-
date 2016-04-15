@@ -4,7 +4,7 @@ program([A]) -->
 functionList([A,B]) --> 
 	function(A), 
 	functionListCollection(B).
-functionListCollection([A]) --> 
+functionListCollection(A) --> 
 	functionList(A).
 functionListCollection([]) --> [].
 function([A,'(',B,')','=',C]) --> 

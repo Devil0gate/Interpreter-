@@ -1,6 +1,6 @@
 tokenize_file(FileName, TokenList):-
 	open(FileName, read, Str),
-	token_list(Str,TokenList), 
+	token_list(Str,TokenList),!, 
 	close(Str).
    
 token_list(Str,L):-

@@ -24,20 +24,20 @@ create_empty_table():-
 % the table in the form ?
 add_symbol(Key,Value):-
 	b_getval(symbol_table,Table),
-	assoc_to_keys(Table,KeyList),
-	(if_key_exist(Key, KeyList)-> 
-		get_assoc(Key,Table,Val,NewMap,[Value|Val]);
-		put_assoc(Key,Table,Value,NewMap)),	
-	b_setval(symbol_table,NewMap).
-	
+	get_check( Key, Table, Current ),
+	put_assoc(Key,Table,[Value|Current],NewMap),	
+	b_setval(symbol_table,NewMap),
+	get_assoc(Key,NewMap,O),
+	nl,write(Key),write(': '),write(O),nl.
+
+get_check( Key, Map, Value ) :-
+	get_assoc( Key, Map, Value ).
+get_check( _, _, [] ).
+
 % get_symbol predicate used for call function
-get_symbol(Name, Body):-
+get_symbol(Key, Value):-
 	b_getval(symbol_table,Table), 
-	get_assoc(Name,Table,Body).
-		
-if_key_exist(Key,[Key|_]):-!.
-	if_key_exist(Key,[_|KeyList]):-
-	if_key_exist(Key,KeyList).	
+	get_assoc(Key,Table, [Value|_]).
 
 add_symbol_list([],[]).
 add_symbol_list([H|T],[H1|T1]):-
@@ -47,13 +47,15 @@ add_symbol_list([H|T],[H1|T1]):-
 % Accepts a key as an argument and removes the most recently
 % added value	
 remove_symbol(Key):-
-%	b_getval(symbol_table,[Key|Rest]),
-%	b_setval([_|Rest],[_]).
 	b_getval(symbol_table, Table),
-	get_assoc(Key, Table, Val),
-	get_tail(Val,Tail),
+	get_assoc(Key, Table, [_|Tail]),
 	put_assoc(Key,Table,Tail,Symbol),
 	b_setval(symbol_table, Symbol).
+
+remove_symbols( [] ).
+remove_symbols( [H|T] ) :-
+	remove_symbol(H),
+	remove_symbols(T).
 
 % get the tail of the list
 get_tail([],[]).	
