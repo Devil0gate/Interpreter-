@@ -77,11 +77,9 @@ type_c('bool', 0).
 parse_params( [], [], [] ).
 parse_params( [[Type, Name], []], [H], [Name] ) :-
 	type_c(Type, H),
-%	write('Name: '), nl, write(Name), nl, write('Value: '), write(H),
 	add_symbol(Name, H).
 parse_params([[Type, Name],[',', T]], [H|Rest], [Name|Result] ):-
 	type_c(Type, H),
-%	write('Name: '), nl, write(Name), nl, write('Value: '), write(H),
 	add_symbol(Name, H),
 	parse_params(T, Rest, Result).
 	
