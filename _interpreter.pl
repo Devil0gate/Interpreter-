@@ -5,28 +5,17 @@ expressionHandler(['if', Comparison, 'then', Val1, 'else', Val2], Result):-
 	valueHandler(Val1, ValResult1),
 	valueHandler(Val2, ValResult2),
 	evaluate(ComparisonResult, ValResult1, ValResult2, Result).
-%	write('Result_conditional_check'), nl,
-%	write(Result).
-	
+
 expressionHandler(['let',ID,'=',Value,'in',Expression], Result):-
-%	write('begin'),
 	valueHandler(Value, ValueResult),
 	add_symbol(ID, ValueResult),
-%	write('get_in'),
 	expressionHandler(Expression, Result),
-%	write('Result_Let_check'), nl,
-%	write(Result),
 	remove_symbol(ID).
 			
 expressionHandler([Value, ExtraExpression], Result):-
-%	write('Start Func: '), write(Value), write(' '), write(ExtraExpression), nl,
 	valueHandler(Value, ValueResult1),
-%	write('Before ExtExp: '), write(ValueResult1), nl,
 	extraExpressionHandler(ExtraExpression, [Operator, ValueResult2]),
-	%write('Before Eval: '), write(ValueResult1), write(' '), write(Operator), write(' '), write(ValueResult2), nl,
 	evaluate(Operator, ValueResult1, ValueResult2, Result).
-%	write('Result_func_check'), nl,
-%	write(Result).
 
 evaluate('+', V1, V2, Result) :- Result is V1 + V2.
 evaluate('-', V1, V2, Result) :- Result is V1 - V2.
@@ -117,15 +106,11 @@ valueHandler([ID, []], Result):-
 	get_symbol(ID, Result).	
 	
 valueHandler([ID, ValueParameter], Result):-
-%	write('VH1: '), write(ID), write('   '), write(ValueParameter), nl,
 	valuePar(ValueParameter, ValParRe),
-%	write('VH2: '), write(ID), write(' '), write(ValParRe), nl,
 	call_func(ID, ValParRe, Result).
 		
 valuePar(['(', Parameters, ')'], Result):-
 	par(Parameters, Result).
-%	write('ParaList'),
-	%nl, write(Result).
 	
 par([Value, ParametersList], Result):-
 	valueHandler(Value, ValueResult),

@@ -6,14 +6,12 @@ run_p(X) :-
 	working_directory(_,'C:/Users/Dan/Desktop'),
 	run('New_tokenize.txt', X).
 	
-% demo file for running parser
 run(FileName, Result):-
     tokenize_file(FileName, TokenList),
     lexer_file(TokenList, LexedList),
     phrase(program(SList),LexedList),
     format(TokenList,SList,Result,_).
     
-% recap tokens
 format(TokenList,[],[],TokenList).
    format(TokenList,[H1|T1],[X|Y],TokenList_):-
       is_list(H1),

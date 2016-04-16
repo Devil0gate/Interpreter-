@@ -5,9 +5,7 @@
 run_program(FileName, Arguments, Result):-
 	create_empty_table(),
 	run(FileName, Parsed),
-%	write(Parsed),nl,
 	initialize_functions(Parsed), !,
-%	write(Parsed), nl,
 	
 	call_func('main', Arguments, Result).
 	

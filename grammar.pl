@@ -1,4 +1,3 @@
-% apply Definite Clause Grammar
 program([A]) --> 
 	functionList(A).
 functionList([A,B]) --> 
