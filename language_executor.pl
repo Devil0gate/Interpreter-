@@ -11,7 +11,7 @@ run_program(FileName, Arguments, Result):-
 	
 run_I() :-
 	working_directory(_,'C:/Users/Dan/Desktop'),
-	run_program('New_tokenize.txt', [2], X),
+	run_program('New_tokenize.txt', [2, 3], X),
 	write(X).
 %	
 
